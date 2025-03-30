@@ -21,6 +21,7 @@ export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   const {
     loading: generatingQuiz,
@@ -68,12 +69,18 @@ export default function Quiz() {
 
   const finishQuiz = async () => {
     const score = calculateScore();
+    const toastId = toast.info("Please wait...", { duration: Infinity });
+  
     try {
       await saveQuizResultFn(quizData, answers, score);
       toast.success("Quiz completed!");
     } catch (error) {
       toast.error(error.message || "Failed to save quiz results");
     }
+    finally {
+      toast.dismiss(toastId);
+    }
+    
   };
 
   const startNewQuiz = () => {
