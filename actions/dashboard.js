@@ -44,12 +44,12 @@ export const generateSkillRoadmap = async (skill, industry) => {
           Create a detailed learning path for the skill "${skill}" in the ${industry} industry.
           Provide the response in ONLY the following JSON format without any additional notes or explanations:
           {
-            "skillOverview": "string",
-            "learningPath": "string",
-            "practicalApplications": "string",
-            "recommendedProjects": "string",
-            "additionalResources": "string",
-            "industryInsights": "string"
+            "pathways": ["Step 1: string", "Step 2: string", "Step 3: string"],
+            "resources": [
+              { "courseName": "string", "courseLink": "string" },
+              { "courseName": "string", "courseLink": "string" }
+            ],
+            "improvementTips": ["Tip 1: string", "Tip 2: string"]
           }
           
           IMPORTANT: Return ONLY the JSON. No additional text, notes, or Markdown formatting.
