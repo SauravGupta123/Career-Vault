@@ -36,6 +36,38 @@ export const generateAIInsights = async (industry) => {
   return JSON.parse(cleanedText);
 };
 
+
+
+export const generateSkillRoadmap = async (skill, industry) => {
+  console.log("Generating skill roadmap for:", skill, industry);
+  const prompt = `
+          Create a detailed learning path for the skill "${skill}" in the ${industry} industry.
+          Provide the response in ONLY the following JSON format without any additional notes or explanations:
+          {
+            "skillOverview": "string",
+            "learningPath": "string",
+            "practicalApplications": "string",
+            "recommendedProjects": "string",
+            "additionalResources": "string",
+            "industryInsights": "string"
+          }
+          
+          IMPORTANT: Return ONLY the JSON. No additional text, notes, or Markdown formatting.
+        `;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+    const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
+
+    // Parse the JSON response
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error("Error parsing skill roadmap response:", error);
+    throw new Error("Failed to generate skill roadmap. Please try again.");
+  }
+};
 export async function getIndustryInsights() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
