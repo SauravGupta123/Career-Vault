@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { saveResume } from "@/actions/resume";
+import { reduceCreditsByOne } from "@/actions/user"; // Import the reduceCreditsByOne function
 import { EntryForm } from "./entry-form";
 import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
@@ -140,9 +141,22 @@ export default function ResumeBuilder({ initialContent }) {
         .trim();
 
       console.log(previewContent, formattedContent);
+
+      // Save the resume
       await saveResumeFn(previewContent);
+
+      // Reduce credits by one
+      const creditResult = await reduceCreditsByOne();
+      console.log(creditResult) 
+      console.log("reemaining credits", creditResult.credits);
+      if (creditResult.success) {
+        toast.success(`Credits remaining: ${parseInt(creditResult.credits)}`);
+      } else {
+        toast.error(creditResult.message || "Failed to reduce credits");
+      }
     } catch (error) {
       console.error("Save error:", error);
+      toast.error("An error occurred while saving the resume");
     }
   };
 
