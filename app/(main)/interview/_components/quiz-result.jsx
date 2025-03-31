@@ -4,13 +4,33 @@ import { Trophy, CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-
+import { reduceCreditsByOne } from "@/actions/user";
+import { toast } from "sonner";
 export default function QuizResult({
   result,
   hideStartNew = false,
   onStartNew,
 }) {
   if (!result) return null;
+  const handleStartNewQuiz = async() => {
+    try{
+    const creditResult = await reduceCreditsByOne();
+    console.log(creditResult) 
+    console.log("reemaining credits", creditResult.credits);
+    if (creditResult.success) {
+      console.log("Credits reduced successfully",creditResult.credits);
+      toast.success(`Credits remaining: ${parseInt(creditResult.credits)}`);
+
+      router.push("/interview/mock");
+    } else {
+      toast.error(creditResult.message || "Failed to reduce credits");
+    }
+  } catch (error) {
+    console.error("Save error:", error);
+    toast.error("An error occurred while saving the resume");
+  }
+   
+  }
 
   return (
     <div className="mx-auto">
@@ -62,7 +82,7 @@ export default function QuizResult({
 
       {!hideStartNew && (
         <CardFooter>
-          <Button onClick={onStartNew} className="w-full">
+          <Button onClick={handleStartNewQuiz} className="w-full">
             Start New Quiz
           </Button>
         </CardFooter>
