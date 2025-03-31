@@ -4,6 +4,8 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { generateAIInsights } from "./dashboard";
+import { redirect } from "next/navigation";
+
 
 export async function updateUser(data) {
   const { userId } = await auth();
@@ -149,8 +151,8 @@ export async function updateCredits() {
 }
 
 
-export const checkCredits = async (userId) => {
-  
+export const checkCredits = async () => {
+  const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
   const user = await db.user.findUnique({
@@ -159,6 +161,52 @@ export const checkCredits = async (userId) => {
   
 
   if (!user) throw new Error("User not found");
-  console.log("checkCredits: User found", user.id);
-  return user.credits;
+  console.log("checkCredits: User found", user.credits);
+  if (user.credits <= 0) {    
+    redirect("/payment"); // Redirect to payment page
+  }
+
+
+  return true;
 }
+
+
+export const reduceCreditsByOne = async () => {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    console.log("reduceCreditsByOne: User found", user.credits);
+
+    if (user.credits <= 0) {
+      throw new Error("Insufficient credits, please buy credits");
+
+    }
+
+    const updatedUser = await db.user.update({
+      where: { clerkUserId: userId },
+      data: { credits: user.credits - 1 },
+    });
+
+   
+    return {
+      success: true,
+      message: "Credits reduced successfully",
+      credits: updatedUser.credits,
+    };
+  } catch (error) {
+    console.error("reduceCreditsByOne: Error reducing credits", error.message);
+
+    return {
+      success: false,
+      message: error.message || "Failed to reduce credits",
+    };
+  }
+};
+
