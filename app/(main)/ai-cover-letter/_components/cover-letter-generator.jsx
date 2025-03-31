@@ -21,7 +21,7 @@ import useFetch from "@/hooks/use-fetch";
 import { coverLetterSchema } from "@/app/lib/schema";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
+import { reduceCreditsByOne } from "@/actions/user";
 export default function CoverLetterGenerator() {
   const router = useRouter();
 
@@ -52,6 +52,14 @@ export default function CoverLetterGenerator() {
   const onSubmit = async (data) => {
     try {
       await generateLetterFn(data);
+       const creditResult = await reduceCreditsByOne();
+           
+            if (creditResult.success) {
+              toast.success(`Credits remaining: ${parseInt(creditResult.credits)}`);
+            } else {
+              toast.error(creditResult.message || "Failed to reduce credits");
+            }
+          
     } catch (error) {
       toast.error(error.message || "Failed to generate cover letter");
     }
