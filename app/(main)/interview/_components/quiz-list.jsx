@@ -18,10 +18,31 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import QuizResult from "./quiz-result";
-
+import { reduceCreditsByOne } from "@/actions/user";
+import { toast } from "sonner";
 export default function QuizList({ assessments }) {
   const router = useRouter();
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+
+  const handleStartNewQuiz = async() => {
+    try{
+    const creditResult = await reduceCreditsByOne();
+    console.log(creditResult) 
+    console.log("reemaining credits", creditResult.credits);
+    if (creditResult.success) {
+      console.log("Credits reduced successfully",creditResult.credits);
+      toast.success(`Credits remaining: ${parseInt(creditResult.credits)}`);
+
+      router.push("/interview/mock");
+    } else {
+      toast.error(creditResult.message || "Failed to reduce credits");
+    }
+  } catch (error) {
+    console.error("Save error:", error);
+    toast.error("An error occurred while saving the resume");
+  }
+   
+  }
 
   return (
     <>
@@ -36,7 +57,7 @@ export default function QuizList({ assessments }) {
                 Review your past quiz performance
               </CardDescription>
             </div>
-            <Button onClick={() => router.push("/interview/mock")}>
+            <Button onClick={handleStartNewQuiz}>
               Start New Quiz
             </Button>
           </div>
@@ -84,7 +105,7 @@ export default function QuizList({ assessments }) {
           <QuizResult
             result={selectedQuiz}
             hideStartNew
-            onStartNew={() => router.push("/interview/mock")}
+            onStartNew={handleStartNewQuiz}
           />
         </DialogContent>
       </Dialog>
