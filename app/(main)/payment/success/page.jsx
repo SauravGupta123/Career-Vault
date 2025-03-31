@@ -4,6 +4,9 @@ import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { updateCredits } from "@/actions/user";
 import Link from "next/link";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BadgeCheck, FileText, MessageSquare, PenLine } from "lucide-react";
 
 function PaymentSuccessContent() {
   const router = useRouter();
@@ -17,51 +20,96 @@ function PaymentSuccessContent() {
         .then((res) => console.log("Credits Updated:", res))
         .catch((err) => console.error("Error Updating Credits:", err));
     }
-    else{
+    else {
       router.push("/");
     }
   }, [sessionId]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <div className="p-6 border border-gray-700 rounded-xl bg-gray-900 shadow-lg text-center max-w-md">
-        <h2 className="text-2xl font-bold">Payment Successful 🎉</h2>
-        <p className="mt-2 text-gray-400">
-          Your credits have been updated. You now have access to premium features!
-        </p>
-
-        <div className="mt-6 space-y-4">
-          <Link href="/resume">
-            <button className="w-full px-6 py-2 bg-blue-500 rounded-lg hover:bg-blue-600">
-              Build Resume
-            </button>
-          </Link>
-          <Link href="/interview">
-            <button className="w-full px-6 py-2 bg-green-500 rounded-lg hover:bg-green-600">
-              Mock Interview Preparation
-            </button>
-          </Link>
-          <Link href="/ai-cover-letter">
-            <button className="w-full px-6 py-2 bg-purple-500 rounded-lg hover:bg-purple-600">
-              AI Cover Letter
-            </button>
-          </Link>
-        </div>
-
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="mt-6 px-6 py-2 bg-gray-700 rounded-lg hover:bg-gray-800"
-        >
-          Go to Dashboard
-        </button>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      <Card className="w-full max-w-lg">
+        <CardHeader className="text-center">
+          <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+            <BadgeCheck className="h-6 w-6 text-primary" />
+          </div>
+          <CardTitle className="text-2xl font-bold">Payment Successful 🎉</CardTitle>
+          <CardDescription>
+            Your credits have been updated. You now have access to premium features!
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card className="bg-card hover:bg-accent/10 transition-colors">
+              <CardHeader className="p-4 pb-2 text-center">
+                <FileText className="h-8 w-8 text-primary mx-auto" />
+              </CardHeader>
+              <CardContent className="p-4 pt-1 text-center">
+                <h3 className="font-medium">Resume Builder</h3>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                <Link href="/resume" className="w-full">
+                  <Button className="w-full" size="sm">
+                    Build Resume
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card className="bg-card hover:bg-accent/10 transition-colors">
+              <CardHeader className="p-4 pb-2 text-center">
+                <MessageSquare className="h-8 w-8 text-primary mx-auto" />
+              </CardHeader>
+              <CardContent className="p-4 pt-1 text-center">
+                <h3 className="font-medium">Mock Interview</h3>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                <Link href="/interview" className="w-full">
+                  <Button className="w-full" size="sm">
+                    Prepare Now
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card className="bg-card hover:bg-accent/10 transition-colors">
+              <CardHeader className="p-4 pb-2 text-center">
+                <PenLine className="h-8 w-8 text-primary mx-auto" />
+              </CardHeader>
+              <CardContent className="p-4 pt-1 text-center">
+                <h3 className="font-medium">Cover Letter</h3>
+              </CardContent>
+              <CardFooter className="p-4 pt-0">
+                <Link href="/ai-cover-letter" className="w-full">
+                  <Button className="w-full" size="sm">
+                    Create Letter
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          </div>
+        </CardContent>
+        
+        <CardFooter className="flex justify-center pb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => router.push("/dashboard")}
+          >
+            Go to Dashboard
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
 
 export default function PaymentSuccess() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse">Loading...</div>
+      </div>
+    }>
       <PaymentSuccessContent />
     </Suspense>
   );
