@@ -44,8 +44,9 @@ Based on a user's information—such as their area of expertise, industry, and s
 ### **AI Integration**
 - **Google Generative AI**: Used for generating industry insights, resumes, and cover letters.
 
-### **Payments**
+### **Payments And Authentication**
 - **Stripe**: Secure payment processing for purchasing credits.
+- **Clerk**: for creating the user from google and github.
 
 ---
 
