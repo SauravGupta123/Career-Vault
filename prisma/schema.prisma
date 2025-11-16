@@ -17,7 +17,7 @@ model User {
   industryInsight IndustryInsight? @relation(fields: [industry], references: [industry])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  credits       Int       @default(3) // Default 3 credits for new users
+  credits       Int       @default(100) // Default 100 credits for new users
 
   // Profile fields
   bio           String?
